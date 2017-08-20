@@ -335,7 +335,7 @@ and Raphael have worked for a year and a half, and Rayburn has worked for 2 year
 * Play around a bit, logged in as temp_admin (see above)
 * Watch the Video <http://theurbanpenguin.com/wp/index.php/understanding-mysql-users/>
 * Pick username, create the user, create your database, and give yourself privileges on your new database.
-* Record your username in [[MariaDB usernames|mariadb-usernames]]
+* Record your username in a file named "username" that you upload to your forked repository.
 * Do the Exercise above
 
 ## References
