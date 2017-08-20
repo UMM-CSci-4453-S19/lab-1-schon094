@@ -1,8 +1,6 @@
-#Lab 1
+# Lab 1
 
-[[Implementation notes|notes]]
-
-##Table of Contents
+## Table of Contents
 
 - [Lab 1](#lab-1)
   - [Broad overview](#broad-overview)
@@ -21,7 +19,7 @@
   - [What to DO](#checklist-of-things-to-do)
   - [References](#references)
 
-##Broad overview
+## Broad overview
 
 A **database** may be defined as a structured set of data (more on what that might mean in later lessons).  
 
