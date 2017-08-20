@@ -29,7 +29,7 @@ Broadly speaking databases fall into two major categories:
   * SQL
   * NoSQL
   
-SQL stands for **Structured Query Language**.  It is the language used to organize, add, remove, and modify the data in an SQL DBMS (big surprise right?).  It is also the language we will use to transform raw data into useable information.  A few well-known examples of SQL DBMS' include MySQL, Oracle, SQL Server, and MariaDB.  In an SQL database information is stored as **tables**.  A table is a two-dimensional array of data.  The *rows* are known as **records**, and the columns are known as **fields**.
+SQL stands for **Structured Query Language**.  It is the language used to organize, add, remove, and modify the data in an SQL DBMS (big surprise right?).  It is also the language we will use to transform raw data into useable information.  A few well-known examples of SQL DBMS include MySQL, Oracle, SQL Server, and MariaDB.  In an SQL database information is stored as **tables**.  A table is a two-dimensional array of data.  The *rows* are known as **records**, and the columns are known as **fields**.
 
 NoSQL is a broad term encompassing many types of databases that organize their data differently than SQL-style databases.  Some well known examples include mongoDB and Neo4J.  NoSQL databases give up consistency guarantees that an SQL DBMS can provide in exchange for improved scalability (which is why they are so popular for applications like Facebook).  There is much more variety in the way that a NoSQL database structures its data, but several are closely associated with structured data formats like XML or JSON.  
 
@@ -42,7 +42,7 @@ We are going to focus on MariaDB because:
   * powerful,
   * and increasingly includes NoSQL support.  
 
-###Relational Databases
+### Relational Databases
 
 SQL databases are **relational Databases (RDBMS)**.  The data is organized around the idea of
 * Databases
@@ -56,13 +56,13 @@ The data is an abstraction of the TABLE.  Most RDBMS use the SQL language to
 * update data and,
 * create structures.
 
-The entire organizational system is secretely based around the ideas of SETS or ordered elements.
+The entire organizational system is secretely based around the ideas of SETS or ordered elements which we will explore in greater detail later.
 
-##MariaDB: a first pass
+## MariaDB: a first pass
 
 As you go through the exercises below, you may find the [references](#references) below useful.
 
-###Log into MariaDB
+### Log into MariaDB
 
 1. Start by opening a terminal (ask if you need help with this step)
 2. Run the following command:<br> `mysql -u tempadmin -p --host=<host> `<br>I will provide the password and hostname in class. (That's a security measure)
@@ -117,13 +117,13 @@ select user, host, password from user;
 
 The user column contains (surprise) the username.  The host column contains the scope for that username, and the password column contains the encrypted password.  
 
-###Decide on a username
+### Decide on a username
 
 You will need to pick a username to access the DBMS.  Add your username to the table in [[MariaDB usernames|mariadb-usernames]].  You don't need to give me your password, but you'll want to keep it somewhere safe-- I can change it if you lose it.
 
 You are going to use an administration accout to add yourself as a user and create a database for your in-class work.  You will need to be on campus in order to access or use MariaDB (either physically or via a VPN) for this purpose.  You will be able to provide access to your fellow students, or remove it.  Use your power wisely.
 
-##Watch a video about MySQL users
+## Watch a video about MySQL users
 
 Before doing anything else, watch the following video which explains a bit about how user accounts work on MySQL (and thus on MariaDB):
 
@@ -131,7 +131,7 @@ Before doing anything else, watch the following video which explains a bit about
 
 Since most of your machines don't have audio... I'll play it on the projector (probably after showing you how to add a user)
 
-##Create your user and database:
+## Create your user and database:
 
 The video you watched introduces the commands `CREATE USER`, `DROP USER`, and `SET PASSWORD`. It also uses a
 convention for accessing a table in a database without having to set that database as your default with
@@ -144,12 +144,12 @@ CREATE USER <name> IDENTIFIED BY '<password>';
 
 For example, I might create the user `testy_pete` as follows:  `CREATE USER testy_pete IDENTIFIED BY 'let me in';`.  Do NOT add the word `PASSWORD` to the `CREATE USER` command-- that special word is used to indicate the presence of an encrypted password (this way you don't need to send an unencrypted password over an unsecure network channel).  The user `testy_pete` now exists.
 
-Go ahead and give it a go.  Your new user has two drawbacks:  
+Go ahead and give it a go with the name that you will use for your user.  Your new user has two drawbacks:  
 
 1. It has very little in the way of privileges (barely enough to do *anything*)
 2. There is no control over the hosts from which the user can connect.
 
-Look at your users privileges like this:
+Look at your user's privileges like this:
 
 ```
 SHOW GRANTS FOR <name>;
@@ -201,7 +201,7 @@ DROP USER <name>;
 
 It is **very** common to use the keyword `DROP` to remove an object (a user, a database, a table, etc).
 
-Now that you have removed your unrestricted account, re-add it with the appropriate HOST designator to restrict access to users in the dungeon (I'll be checking the host **and** the password).
+Now that you have removed your unrestricted account, re-add it with the appropriate HOST designator to restrict access to users in the dungeon (I'll be checking the host **and** the password as part of your grade).
 
 Have a look at how the user database has changed:
 
@@ -209,7 +209,7 @@ Have a look at how the user database has changed:
 select user, host, password from mysql.user;
 ```
 
-###Making a database
+### Making a database
 
 You create a database with the `CREATE DATABASE <database name>` command and you delete it with
 the `DROP DATABASE <database name>` command.
@@ -222,7 +222,7 @@ CREATE DATABASE testy_pete;
 
 You will use this in future labs.
 
-###Adjusting Privileges
+### Adjusting Privileges
 
 MariaDB controls what you can do through the use of **privileges**.  Privileges can be **granted** or **revoked** (much as users can be **created** or **dropped**).
 
@@ -238,6 +238,8 @@ There are MANY levels of access that are allowed. Most are fairly straightforwar
 * CREATE USER: ability to create, remove, rename users AND the ability to revoke all privileges from a user (but not add them)
 * DROP: ability to remove a table
 * SELECT: ability to pull information from a table
+* INSERT: ability to add records to a table
+* DELETE: ability to remove records from a table
 * SHOW DATABASES: ability to use the command SHOW DATABASES and see ALL databases
 * UPDATE: ability to update
 * USAGE: counter-intuitively… no real rights to anything (I *THINK* it means they can still log-in)
@@ -261,7 +263,7 @@ GRANT SELECT on test.A to 'dummy'@'192.%';
 
 will give the user dummy the ability to extract information from table `A` in database `test` IF they are
 logged in from an IP address starting with 192. (NOTE: IPV6 can be accommodated by this convention
-too). WARNING: in mysql the scoped user MUST have been previously created in order to grant the
+too). WARNING: in mySQL the scoped user MUST have been previously created in order to grant the
 privileges. In MariaDB the user will be automagically created if it doesn't already exist… this means that
 the password for that scoped user might not be what you expect.
 
@@ -281,22 +283,23 @@ FLUSH PRIVILEGES;
 
 If you neglect this step you might not be able to use the new database from your new account.
 
-##Log in with your new account
+## Log in with your new account
 
-Give it a whirl.  log out of the `tempadmin` account using `EXIT;`, and see if you can log in with your new account.
+Give it a whirl.  Log out of the `tempadmin` account using `EXIT;`, and see if you can log in with your new account.
 
-###Setting your password
+### Setting your password
 You can use the following command to set your password once you are logged into MariaDB:
 
 > `SET PASSWORD = PASSWORD('cleartext password');`
 
-##Exercises
+## Exercises
 
 I'm going to ask you to do a series of tasks that will probably require you to look a few things up
 online. I've included some references for this lab (down below), but in the future you'll want to figure out
-how to google your way to the exact format of a command and examples. In particular you are going to need to figure out how the `CREATE TABLE` and `INSERT` statements work.  You will also need to figure out a little bit about SQL data-types.  If you have any questions feel free to ask.  With that in mind, here's what I
-want you to do now:
+how to google your way to the exact format of a command and examples. In particular you are going to need to figure out how the `CREATE TABLE` and `INSERT` statements work.  You will also need to figure out a little bit about SQL data-types.  If you have any questions feel free to ask (I plan on providing a minilecture on the subject).  With that in mind, here's what I
+want you to do (or have already done):
 
+1. Create your database (this should already be completed).  You will use this database for all your work.
 1. Create a table called `test` with ONE column named `test_field`<BR>the data-type of `test_field` must be TEXT and you should insert your last name into the table.
 1. Give the user `peter` full privileges to your database:<BR>`grant all on <name>.* to 'peter'@'%';`
 1. Apply the password function to the string 'readyplayerone' (we'll go over the syntax of this in another lab):<BR>`select password('readyplayerone');`
@@ -327,7 +330,7 @@ and Raphael have worked for a year and a half, and Rayburn has worked for 2 year
   *  Price and Powell started at $16,000 and have both been working for three years.
   *  Porter started at $20,000 and has been around two years longer than anyone else.
 
-##Checklist of things to do
+## Checklist of things to do
 
 * Play around a bit, logged in as temp_admin (see above)
 * Watch the Video <http://theurbanpenguin.com/wp/index.php/understanding-mysql-users/>
@@ -337,7 +340,7 @@ and Raphael have worked for a year and a half, and Rayburn has worked for 2 year
 
 ##References
 
-Use these references for review:
+Use these references for review and to learn some new things that you'll be needing:
   * data types:
     [https://mariadb.com/kb/en/data-types]
   * Nice intro to creating tables:
