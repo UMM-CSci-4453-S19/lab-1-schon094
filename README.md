@@ -69,7 +69,7 @@ As you go through the exercises below, you may find the [references](#references
 
 You are using the `mysql` client.  This is a typical command line interface. MOST commands are in a language called SQL and they need to end in a semicolon. Let's start simply:
 
-###Poke around a bit
+### Poke around a bit
 
 Look at the databases in the system:
 
@@ -338,7 +338,7 @@ and Raphael have worked for a year and a half, and Rayburn has worked for 2 year
 * Record your username in [[MariaDB usernames|mariadb-usernames]]
 * Do the Exercise above
 
-##References
+## References
 
 Use these references for review and to learn some new things that you'll be needing:
   * data types:
